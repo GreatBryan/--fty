@@ -17,6 +17,8 @@
         <java.version>11</java.version>
         <repackage.classifier/>
         <spring-native.version>0.11.3</spring-native.version>
+        <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
+        <thymeleaf-layout-dialect.version>2.0.5</thymeleaf-layout-dialect.version>
     </properties>
     <dependencies>
         <dependency>
