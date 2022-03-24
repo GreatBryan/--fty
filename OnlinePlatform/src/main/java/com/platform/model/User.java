@@ -6,7 +6,6 @@ import javax.persistence.*;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String name;
@@ -16,6 +15,8 @@ public class User {
     private String password;
 
     private int role;
+
+    private byte[] picture;
 
     public int getId() {
         return id;
@@ -55,5 +56,13 @@ public class User {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
     }
 }
