@@ -27,6 +27,6 @@ public class LabelUtil {
     }
 
     public int newLabelId(){
-        return labelRepository.findAll().size() + 1;
+        return labelRepository.findMaxId() + 1;
     }
 }

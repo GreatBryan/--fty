@@ -11,6 +11,6 @@ public class CartUtil {
     private CartRepository cartRepository;
 
     public int newCartId(){
-        return cartRepository.findAll().size() + 1;
+        return cartRepository.findMaxId() + 1;
     }
 }

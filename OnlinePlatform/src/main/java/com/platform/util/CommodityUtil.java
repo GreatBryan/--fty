@@ -10,6 +10,6 @@ public class CommodityUtil {
     private CommodityRepository commodityRepository;
 
     public int newCommodityId(){
-        return commodityRepository.findAll().size() + 1;
+        return commodityRepository.findMaxId() + 1;
     }
 }

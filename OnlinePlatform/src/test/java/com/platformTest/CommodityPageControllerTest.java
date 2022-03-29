@@ -1,6 +1,8 @@
 package com.platformTest;
 
 import com.platform.controller.CommodityPageController;
+import com.platform.repository.CartRepository;
+import com.platform.repository.CommodityRepository;
 import com.platform.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,12 @@ public class CommodityPageControllerTest {
 
     @Autowired
     private CommodityPageController commodityPageController;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
+    private CommodityRepository commodityRepository;
 
     /**
      * url test:
@@ -36,5 +44,10 @@ public class CommodityPageControllerTest {
         String result = commodityPageController.buyCommodity(1, 1);
         //此测试需要去cart表中手动确定
         assertEquals(Constants.SUCCESS, result);
+    }
+
+    @Test
+    public void testmp(){
+        System.out.println(commodityRepository.findMaxId());
     }
 }

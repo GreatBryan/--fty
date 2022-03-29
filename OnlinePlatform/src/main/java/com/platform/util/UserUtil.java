@@ -12,7 +12,7 @@ public class UserUtil {
     private UserRepository userRepository;
 
     public int newUserId(){
-        return userRepository.findAll().size() + 1;
+        return userRepository.findMaxId() + 1;
     }
 
 }
