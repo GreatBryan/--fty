@@ -60,7 +60,7 @@ public class UserPageController {
                                   @RequestParam("name") String name,
                                   @RequestParam("role") int role){
         List<User> list = userRepository.findAllByAccount(account);
-        if(list != null && list.size() > 0){
+        if(list == null || list.size() == 0){
             User user = new User();
             user.setId(userUtil.newUserId());
             user.setAccount(account);

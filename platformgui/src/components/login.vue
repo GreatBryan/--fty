@@ -22,6 +22,23 @@
             <Icon type="md-body" />
             <span>账号注册</span>
           </p>
+          <Form :model="formItem" :label-width="80">
+            <FormItem label="名字">
+              <Input v-model="formItem.name" placeholder="长度不超过10"></Input>
+            </FormItem>
+            <FormItem label="账号">
+              <Input v-model="formItem.account" placeholder="长度不超过10"></Input>
+            </FormItem>
+            <FormItem label="密码">
+              <Input v-model="formItem.password" placeholder="长度不超过10"></Input>
+            </FormItem>
+            <FormItem label="role">
+              <RadioGroup v-model="formItem.role">
+                <Radio label="0">普通用户</Radio>
+                <Radio label="1">商家</Radio>
+              </RadioGroup>
+            </FormItem>
+          </Form>
           <div slot="footer" style="display: flex; align-items: center;justify-content: center">
             <Button type="success" @click="registerCheck">注册</Button>
           </div>
@@ -37,7 +54,13 @@ export default {
     return {
       account: '',
       password: '',
-      register: false
+      register: false,
+      formItem: {
+        name: '',
+        account: '',
+        password: '',
+        role: ''
+      }
     }
   },
   methods: {
@@ -55,23 +78,40 @@ export default {
           that.$Message.info('账号或密码不正确')
         }
       })
+    },
+    registerCheck () {
+      let that = this
+      let url = that.serverURL + '/userpage/register'
+      let parameters = {account: that.formItem.account, password: that.formItem.password, name: that.formItem.name, role: that.formItem.role}
+      console.log(parameters)
+      if (that.formItem.account === '') {
+        that.$Message.info('账号不能为空')
+        return
+      }
+      if (that.formItem.password === '') {
+        that.$Message.info('密码不能为空')
+        return
+      }
+      if (that.formItem.name === '') {
+        that.$Message.info('名字不能为空')
+        return
+      }
+      if (that.formItem.role === '') {
+        that.$Message.info('role未选择')
+        return
+      }
+      that.axios.get(url, {
+        params: parameters
+      }).then(function (response) {
+        console.log(response.data)
+        if (response.data === that.SUCCESS) {
+          that.$Message.info('注册成功')
+          that.register = false
+        } else {
+          that.$Message.info('账号已存在')
+        }
+      })
     }
-    // ok () {
-    //   let that = this
-    //   let url = that.serverURL + '/userpage/register'
-    //   let parameters = {account: that.account, password: that.password, name: 'fty', role: 0}
-    //   that.axios.get(url, {
-    //     params: parameters
-    //   }).then(function (response) {
-    //     console.log(response.data)
-    //     if (response.data === that.SUCCESS) {
-    //       that.$router.replace('/index')
-    //       this.$Message.info('注册成功')
-    //     } else {
-    //       that.$Message.info('账号已存在')
-    //     }
-    //   })
-    // }
   }
 }
 </script>
