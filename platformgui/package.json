@@ -13,10 +13,13 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.26.1",
     "element-ui": "^2.15.6",
+    "view-design": "^4.7.0",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.3",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuejs-dialog": "^1.4.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

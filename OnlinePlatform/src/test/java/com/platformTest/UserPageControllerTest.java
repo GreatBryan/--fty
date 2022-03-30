@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -20,14 +22,14 @@ public class UserPageControllerTest {
      */
     @Test
     public void testGetUserByAccount(){
-        User user = userPageController.getUserByAccount("1368111909");
-        assertEquals(1, user.getId());
-        assertEquals("fty", user.getName());
-        assertEquals("1368111909", user.getAccount());
-        assertEquals("123456789", user.getPassword());
-        assertEquals(1, user.getRole());
+        List<User> user = userPageController.getUserByAccount("1368111909");
+        assertEquals(1, user.get(0).getId());
+        assertEquals("fty", user.get(0).getName());
+        assertEquals("1368111909", user.get(0).getAccount());
+        assertEquals("123456789", user.get(0).getPassword());
+        assertEquals(1, user.get(0).getRole());
         byte[] picture = new byte[1];
-        assertEquals(null, user.getPicture());
+        assertEquals(null, user.get(0).getPicture());
 
     }
 
