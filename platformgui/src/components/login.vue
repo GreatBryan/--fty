@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="lgD">
-        <Input prefix="ios-contact" placeholder="输入用户密码" type="text" v-model="password" style="width: 85%; height: 100%;" />
+        <Input prefix="md-lock" password placeholder="输入用户密码" type="password" v-model="password" style="width: 85%; height: 100%;" />
       </div>
       <div class="logC">
         <Button type="primary" @click="login" id = "login" style="margin-right: 10px">登 录</Button>
@@ -30,7 +30,10 @@
               <Input v-model="formItem.account" placeholder="长度不超过10"></Input>
             </FormItem>
             <FormItem label="密码">
-              <Input v-model="formItem.password" placeholder="长度不超过10"></Input>
+              <Input v-model="formItem.password" type="password" password placeholder="长度不超过10"></Input>
+            </FormItem>
+            <FormItem label="确认密码">
+              <Input v-model="formItem.password_1" type="password" password placeholder="长度不超过10"></Input>
             </FormItem>
             <FormItem label="role">
               <RadioGroup v-model="formItem.role">
@@ -59,6 +62,7 @@ export default {
         name: '',
         account: '',
         password: '',
+        password_1: '',
         role: ''
       }
     }
@@ -68,11 +72,13 @@ export default {
       let that = this
       let url = that.serverURL + '/userpage/check'
       let parameters = {account: that.account, password: that.password}
+      that.$Message.info('等待响应')
       that.axios.get(url, {
         params: parameters
       }).then(function (response) {
         console.log(response.data)
         if (response.data === that.SUCCESS) {
+          that.$Message.info('登录成功')
           that.$router.replace('/index')
         } else {
           that.$Message.info('账号或密码不正确')
@@ -92,6 +98,14 @@ export default {
         that.$Message.info('密码不能为空')
         return
       }
+      if (that.formItem.password_1 === '') {
+        that.$Message.info('请确认密码')
+        return
+      }
+      if (that.formItem.password !== that.formItem.password_1) {
+        that.$Message.info('两次密码不一致')
+        return
+      }
       if (that.formItem.name === '') {
         that.$Message.info('名字不能为空')
         return
@@ -100,6 +114,7 @@ export default {
         that.$Message.info('role未选择')
         return
       }
+      that.$Message.info('等待响应')
       that.axios.get(url, {
         params: parameters
       }).then(function (response) {
