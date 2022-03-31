@@ -1,6 +1,6 @@
 package com.platform.controller;
 
-import com.platform.model.User;
+import com.platform.util.model.User;
 import com.platform.repository.UserRepository;
 import com.platform.util.Constants;
 import com.platform.util.UserUtil;
@@ -25,6 +25,7 @@ public class UserPageController {
      */
     @CrossOrigin(origins = "*",maxAge = 3600)
     @GetMapping("/user")
+    @ResponseBody
     public List<User> getUserByAccount(@RequestParam("account") String account){
         return userRepository.findAllByAccount(account);
     }
@@ -37,6 +38,7 @@ public class UserPageController {
      */
     @CrossOrigin(origins = "*",maxAge = 3600)
     @GetMapping("/check")
+    @ResponseBody
     public String loginAccount(@RequestParam("account") String account,
                                @RequestParam("password") String password){
         List<User> list = userRepository.findAllByAccount(account);
@@ -55,6 +57,7 @@ public class UserPageController {
      */
     @CrossOrigin(origins = "*",maxAge = 3600)
     @GetMapping("/register")
+    @ResponseBody
     public String registerAccount(@RequestParam("account") String account,
                                   @RequestParam("password") String password,
                                   @RequestParam("name") String name,

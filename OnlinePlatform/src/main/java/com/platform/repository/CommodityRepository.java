@@ -1,6 +1,6 @@
 package com.platform.repository;
 
-import com.platform.model.Commodity;
+import com.platform.util.model.Commodity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

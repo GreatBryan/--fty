@@ -1,6 +1,6 @@
 package com.platform.util;
 
-import com.platform.model.Label;
+import com.platform.util.model.Label;
 import com.platform.repository.LabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;

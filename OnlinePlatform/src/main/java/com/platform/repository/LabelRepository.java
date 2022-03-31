@@ -1,9 +1,8 @@
 package com.platform.repository;
 
-import com.platform.model.Label;
+import com.platform.util.model.Label;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 

@@ -1,19 +1,13 @@
 package com.platform.controller;
 
-import com.platform.model.Cart;
+import com.platform.util.model.Cart;
 import com.platform.repository.CartRepository;
 import com.platform.util.CartUtil;
 import com.platform.util.Constants;
 import com.platform.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -37,6 +31,7 @@ public class CommodityPageController {
      * @return 加入结果
      */
     @RequestMapping("/addcart")
+    @ResponseBody
     public String addCart(@RequestParam("commodityid") int commodityid,
                        @RequestParam("userid") int userid){
         return updateCartByCommodityidAndUserid(commodityid, userid, Constants.ADDINTOCART);
@@ -49,6 +44,7 @@ public class CommodityPageController {
      * @return 购买结果
      */
     @RequestMapping("/buycommodity")
+    @ResponseBody
     public String buyCommodity(@RequestParam("commodityid") int commodityid,
                           @RequestParam("userid") int userid){
         return updateCartByCommodityidAndUserid(commodityid, userid, Constants.BUYCOMMODITY);

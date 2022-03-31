@@ -1,6 +1,5 @@
 package com.platform.util;
 
-import com.platform.model.User;
 import com.platform.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;

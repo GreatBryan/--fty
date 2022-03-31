@@ -1,6 +1,6 @@
 package com.platform.repository;
 
-import com.platform.model.Cart;
+import com.platform.util.model.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

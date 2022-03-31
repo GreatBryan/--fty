@@ -72,7 +72,6 @@ export default {
       let that = this
       let url = that.serverURL + '/userpage/check'
       let parameters = {account: that.account, password: that.password}
-      that.$Message.info('等待响应')
       that.axios.get(url, {
         params: parameters
       }).then(function (response) {

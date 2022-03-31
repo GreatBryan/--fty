@@ -1,7 +1,7 @@
 package com.platform.controller;
 
-import com.platform.model.Commodity;
-import com.platform.model.Label;
+import com.platform.util.model.Commodity;
+import com.platform.util.model.Label;
 import com.platform.repository.CommodityRepository;
 import com.platform.repository.LabelRepository;
 import com.platform.util.CommodityUtil;
@@ -33,6 +33,7 @@ public class MerchantPageController {
      * @return 添加结果
      */
     @GetMapping("/addlabel")
+    @ResponseBody
     public String addLabel(@RequestParam("name") String name){
         Label label = new Label();
         label.setId(labelUtil.newLabelId());
@@ -55,6 +56,7 @@ public class MerchantPageController {
      * @return 添加结果
      */
     @GetMapping("/addcommodity")
+    @ResponseBody
     public String addCommodity(@RequestParam("name") String name,
                                @RequestParam("price") int price,
                                @RequestParam("label1") String label1,
