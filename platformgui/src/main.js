@@ -6,7 +6,7 @@ import router from './router'
 // eslint-disable-next-line
 import login from './components/login'
 // eslint-disable-next-line
-import index from './components/index'
+import home from './components/home'
 import VueResource from 'vue-resource'
 import ViewUI from 'view-design'
 import 'view-design/dist/styles/iview.css'
@@ -23,8 +23,8 @@ Vue.config.productionTip = false
 Vue.use(VueResource)
 Vue.use(ViewUI)
 Vue.prototype.axios = axios
-Vue.prototype.serverURL = 'http://127.0.0.1:8082'
-// Vue.prototype.serverURL = 'http://116.205.171.68:8080/platform'
+// Vue.prototype.serverURL = 'http://127.0.0.1:8082'
+Vue.prototype.serverURL = 'http://116.205.171.68:8080/platform'
 Vue.prototype.SUCCESS = 111
 
 // eslint-disable-next-line no-new
@@ -33,3 +33,12 @@ new Vue({
   router: router,
   render: h => h(App)
 })
+
+export default function logStateCheck () {
+  console.log(localStorage.getItem('jingbao_userid'))
+  if (localStorage.getItem('jingbao_userid') !== null) {
+    return true
+  } else {
+    return false
+  }
+}

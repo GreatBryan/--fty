@@ -1,12 +1,16 @@
 package com.platform.controller;
 
+import com.platform.util.ImageUtil;
 import com.platform.util.model.User;
 import com.platform.repository.UserRepository;
 import com.platform.util.Constants;
 import com.platform.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -18,6 +22,10 @@ public class UserPageController {
 
     @Autowired
     private UserUtil userUtil;
+
+    @Autowired
+    private ImageUtil imageUtil;
+
     /**
      * 通过账号查询用户
      * @param account 账号
@@ -79,5 +87,39 @@ public class UserPageController {
         }else{
             return Constants.FAILED;
         }
+    }
+
+    /**
+     * 更新用户图片
+     * @param account 账号
+     * @param img 图片
+     * @return 更新结果
+     */
+    @CrossOrigin(origins = "*",maxAge = 3600)
+    @PostMapping("/updateuserimg")
+    @ResponseBody
+    public String updateImgByAccount(@RequestParam("account") String account,
+                                     @RequestParam("img") MultipartFile img) throws IOException {
+        List<User> users = userRepository.findAllByAccount(account);
+        if(users != null && users.size() > 0){
+            User user = users.get(0);
+            user.setPicture(imageUtil.imageToByte(img));
+            userRepository.saveAndFlush(user);
+            return Constants.SUCCESS;
+        }else{
+            return Constants.FAILED;
+        }
+    }
+
+    /**
+     * 获取用户图片
+     * @param account 账号
+     * @return 图片
+     */
+    @CrossOrigin(origins = "*",maxAge = 3600)
+    @GetMapping("/getuserimg")
+    @ResponseBody
+    public byte[] updateImgByAccount(@RequestParam("account") String account) throws IOException {
+        return userRepository.findAllByAccount(account).get(0).getPicture();
     }
 }

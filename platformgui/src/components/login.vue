@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import logStateCheck from '../main'
 export default {
   data () {
     return {
@@ -67,6 +68,9 @@ export default {
       }
     }
   },
+  created () {
+    if (logStateCheck() === true) this.$router.replace('/home')
+  },
   methods: {
     login () {
       let that = this
@@ -75,10 +79,12 @@ export default {
       that.axios.get(url, {
         params: parameters
       }).then(function (response) {
-        console.log(response.data)
         if (response.data === that.SUCCESS) {
-          that.$Message.info('登录成功')
-          that.$router.replace('/index')
+          localStorage.clear()
+          localStorage.setItem('jingbao_userid', that.account)
+          console.log(localStorage.getItem('userid'))
+          that.$Message.success('登录成功')
+          that.$router.replace('/home')
         } else {
           that.$Message.info('账号或密码不正确')
         }
@@ -119,7 +125,7 @@ export default {
       }).then(function (response) {
         console.log(response.data)
         if (response.data === that.SUCCESS) {
-          that.$Message.info('注册成功')
+          that.$Message.success('注册成功')
           that.register = false
         } else {
           that.$Message.info('账号已存在')
@@ -131,12 +137,6 @@ export default {
 </script>
 
 <style>
-  body {
-    background-image: url(../../static/img/pic1.jpg);
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: center center;
-  }
 
   * {
     margin: 0;
@@ -144,6 +144,10 @@ export default {
   }
 
   #wrap {
+    background-image: url(../../static/img/pic1.jpg);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    margin-top: 60px;
     height: 600px;
     width: 100%;
     background-position: center center;
@@ -165,9 +169,10 @@ export default {
   }
   .logGet .logD.logDtip .p1 {
     display: inline-block;
-    font-family: "PingFang SC",serif;
-    font-size: 40px;
+    font-family: gaoyuan, serif;
+    font-size: 50px;
     margin-top: 30px;
+    margin-left: 0;
     width: 86%;
     font-weight:bold;
   }
@@ -194,5 +199,12 @@ export default {
     margin-bottom: 0px;
     margin-left: auto;
   }
-
+  @font-face{
+    font-family:'weifeng';
+    src:url('../../static/font/weifeng.ttf');
+  }
+  @font-face{
+    font-family:'gaoyuan';
+    src:url('../../static/font/gaoyuan.ttf');
+  }
 </style>
