@@ -10,6 +10,10 @@ public class CommodityUtil {
     private CommodityRepository commodityRepository;
 
     public int newCommodityId(){
-        return commodityRepository.findMaxId() + 1;
+        try{
+            return commodityRepository.findMaxId() + 1;
+        } catch (Exception e){
+            return 1;
+        }
     }
 }

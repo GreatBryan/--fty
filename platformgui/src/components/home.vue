@@ -66,35 +66,25 @@
           <Layout>
             <Sider hide-trigger :style="{background: '#fff'}">
               <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']">
-                <Submenu name="1">
+                <Submenu v-for="(label, i) in labelList" :key="i" :name="label.label1id">
                   <template slot="title">
-                    <Icon type="ios-navigate"></Icon>
-                    Item 1
+                    <Icon type="ios-basket" style="font-size: 25px;" ></Icon>
+                    <span style="font-size: 18px;"> {{label.label1name}} </span>
                   </template>
-                  <MenuItem name="1-1">Option 1</MenuItem>
-                  <MenuItem name="1-2">Option 2</MenuItem>
-                  <MenuItem name="1-3">Option 3</MenuItem>
-                </Submenu>
-                <Submenu name="2">
-                  <template slot="title">
-                    <Icon type="ios-keypad"></Icon>
-                    Item 2
-                  </template>
-                  <MenuItem name="2-1">Option 1</MenuItem>
-                  <MenuItem name="2-2">Option 2</MenuItem>
-                </Submenu>
-                <Submenu name="3">
-                  <template slot="title">
-                    <Icon type="ios-analytics"></Icon>
-                    Item 3
-                  </template>
-                  <MenuItem name="3-1">Option 1</MenuItem>
-                  <MenuItem name="3-2">Option 2</MenuItem>
+                    <MenuItem v-for="(label2, j) in label.label2List" :key="j" :name="label2.label2id">
+                      <span style="font-size: 12px; margin-left: 15px" @click="getCommodity(label2.label2id)"> {{label2.label2name}} </span>
+                    </MenuItem>
                 </Submenu>
               </Menu>
             </Sider>
             <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
-              Content
+              <span v-for="(commodity, i) in commodityList" :key="i">
+                <p style="margin-top: 10px; font-size: 20px; font-family:weifeng, serif">{{commodity.name}}</p>
+                <img :src=commodity.pict1 style="height: 300px"/>
+                <img :src=commodity.pict2 style="height: 300px"/>
+                <img :src=commodity.pict3 style="height: 300px"/>
+                <p style="margin-top: 10px; font-size: 20px; font-family:weifeng, serif">{{commodity.price}}￥</p>
+              </span>
             </Content>
           </Layout>
         </Content>
@@ -110,7 +100,9 @@ export default {
     return {
       logined: true,
       username: null,
-      imgsrc: null
+      imgsrc: null,
+      labelList: [],
+      commodityList: []
     }
   },
   created () {
@@ -155,6 +147,16 @@ export default {
         console.log(that.imgsrc)
       })
     }
+    // 获取标签
+    let that = this
+    let url = that.serverURL + '/commodity/getalllabel1'
+    that.axios.get(url, {
+      params: null,
+      responseType: 'json'
+    }).then(response => {
+      console.log(response.data)
+      that.labelList = response.data
+    })
   },
   methods: {
     jumpLogin () {
@@ -164,6 +166,52 @@ export default {
       localStorage.clear()
       this.$Message.info('账号退出')
       this.logined = false
+    },
+    getCommodity (label2id) {
+      let that = this
+      let url = that.serverURL + '/commodity/getcombylabel2'
+      let parameters = {label2id: label2id}
+      that.axios.get(url, {
+        params: parameters
+      }).then(response => {
+        that.commodityList = response.data
+        for (let i = 0; i < that.commodityList.length; i++) {
+          // 获取第一张图片
+          that.axios.get(that.serverURL + '/commodity/getpict1byid', {
+            params: {commodityid: that.commodityList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.commodityList[i].pict1 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+          // 获取第二张图片
+          that.axios.get(that.serverURL + '/commodity/getpict2byid', {
+            params: {commodityid: that.commodityList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.commodityList[i].pict2 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+          // 获取第三张图片
+          that.axios.get(that.serverURL + '/commodity/getpict3byid', {
+            params: {commodityid: that.commodityList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.commodityList[i].pict3 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+        }
+        console.log(that.commodityList)
+      })
     }
   }
 }

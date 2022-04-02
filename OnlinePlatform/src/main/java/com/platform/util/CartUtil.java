@@ -11,6 +11,10 @@ public class CartUtil {
     private CartRepository cartRepository;
 
     public int newCartId(){
-        return cartRepository.findMaxId() + 1;
+        try{
+            return cartRepository.findMaxId() + 1;
+        } catch (Exception e){
+            return 1;
+        }
     }
 }

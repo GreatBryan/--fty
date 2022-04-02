@@ -1,4 +1,4 @@
-package com.platform.util.model;
+package com.platform.model;
 
 import javax.persistence.*;
 
@@ -17,6 +17,36 @@ public class Commodity {
     private int label2;
 
     private int label3;
+
+    private byte[] pict1;
+
+    private byte[] pict2;
+
+    private byte[] pict3;
+
+    public byte[] getPict1() {
+        return pict1;
+    }
+
+    public void setPict1(byte[] pict1) {
+        this.pict1 = pict1;
+    }
+
+    public byte[] getPict2() {
+        return pict2;
+    }
+
+    public void setPict2(byte[] pict2) {
+        this.pict2 = pict2;
+    }
+
+    public byte[] getPict3() {
+        return pict3;
+    }
+
+    public void setPict3(byte[] pict3) {
+        this.pict3 = pict3;
+    }
 
     public int getId() {
         return id;

@@ -1,13 +1,20 @@
 package com.platform.controller;
 
-import com.platform.util.model.Cart;
+import com.platform.repository.CommodityRepository;
+import com.platform.repository.Label2Repository;
+import com.platform.repository.LabelRepository;
+import com.platform.model.Cart;
 import com.platform.repository.CartRepository;
 import com.platform.util.CartUtil;
 import com.platform.util.Constants;
 import com.platform.util.DateUtil;
+import com.platform.model.Commodity;
+import com.platform.model.Label;
+import com.platform.model.Label2;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.json.JSONObject;
 import java.util.List;
 
 @RestController
@@ -23,6 +30,15 @@ public class CommodityPageController {
 
     @Autowired
     private CartUtil cartUtil;
+
+    @Autowired
+    private CommodityRepository commodityRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
+    private Label2Repository label2Repository;
 
     /**
      * 加入购物车
@@ -80,4 +96,69 @@ public class CommodityPageController {
             }
         }
     }
+
+    /**
+     * 获取商品一级标签
+     */
+    @RequestMapping("/getalllabel1")
+    @ResponseBody
+    public String getAllLabel1() throws JSONException {
+        List<Label> labels = labelRepository.findAll();
+        List<Label2> label2s = label2Repository.findAll();
+        JSONObject json = new JSONObject();
+        for(int i = 0; i < labels.size(); i++){
+            JSONObject tmp1 = new JSONObject();
+            JSONObject tmp2 = new JSONObject();
+            for(int j = 0; j < label2s.size(); j++){
+                if(label2s.get(j).getLabel1() == labels.get(i).getId()){
+                    JSONObject tmp3 = new JSONObject();
+                    tmp3.put("label2id", label2s.get(j).getId());
+                    tmp3.put("label2name", label2s.get(j).getLabel2name());
+                    tmp2.put(String.valueOf(j), tmp3);
+                }
+            }
+            tmp1.put("label2List", tmp2);
+            tmp1.put("label1name", labels.get(i).getLabel());
+            tmp1.put("label1id",labels.get(i).getId());
+            json.put(String.valueOf(i), tmp1);
+        }
+        return json.toString();
+    }
+
+    /**
+     * 根据标签2获取商品信息
+     */
+    @RequestMapping("/getcombylabel2")
+    @ResponseBody
+    public List<Commodity> getCommodityByLabel2(@RequestParam("label2id") int label2id){
+        return commodityRepository.findAllByLabel2(label2id);
+    }
+
+    /**
+     * 根据商品id获取商品图片1
+     */
+    @RequestMapping("/getpict1byid")
+    @ResponseBody
+    public byte[] getPicture1ById(@RequestParam("commodityid") int commodityid){
+        return commodityRepository.findAllById(commodityid).get(0).getPict1();
+    }
+
+    /**
+     * 根据商品id获取商品图片2
+     */
+    @RequestMapping("/getpict2byid")
+    @ResponseBody
+    public byte[] getPicture2ById(@RequestParam("commodityid") int commodityid){
+        return commodityRepository.findAllById(commodityid).get(0).getPict2();
+    }
+
+    /**
+     * 根据商品id获取商品图片1
+     */
+    @RequestMapping("/getpict3byid")
+    @ResponseBody
+    public byte[] getPicture3ById(@RequestParam("commodityid") int commodityid){
+        return commodityRepository.findAllById(commodityid).get(0).getPict3();
+    }
+
 }

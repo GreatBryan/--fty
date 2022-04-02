@@ -1,7 +1,8 @@
 package com.platform.controller;
 
-import com.platform.util.model.Commodity;
-import com.platform.util.model.Label;
+import com.platform.util.ImageUtil;
+import com.platform.model.Commodity;
+import com.platform.model.Label;
 import com.platform.repository.CommodityRepository;
 import com.platform.repository.LabelRepository;
 import com.platform.util.CommodityUtil;
@@ -9,6 +10,9 @@ import com.platform.util.Constants;
 import com.platform.util.LabelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/merchantpage")
@@ -26,6 +30,9 @@ public class MerchantPageController {
 
     @Autowired
     private CommodityUtil commodityUtil;
+
+    @Autowired
+    private ImageUtil imageUtil;
 
     /**
      * 添加标签
@@ -50,25 +57,25 @@ public class MerchantPageController {
      * 添加商品
      * @param name 商品名字
      * @param price 商品价格
-     * @param label1 商品标签一
-     * @param label2 商品标签二，可选
-     * @param label3 商品标签三，可选
+     * @param label2id 商品标签二的id
      * @return 添加结果
      */
-    @GetMapping("/addcommodity")
+    @PostMapping("/addcommodity")
     @ResponseBody
     public String addCommodity(@RequestParam("name") String name,
                                @RequestParam("price") int price,
-                               @RequestParam("label1") String label1,
-                               @RequestParam(value = "label2", required = false) String label2,
-                               @RequestParam(value = "label3", required = false) String label3){
+                               @RequestParam("label2id") int label2id,
+                               @RequestParam("img1") MultipartFile img1,
+                               @RequestParam("img2") MultipartFile img2,
+                               @RequestParam("img3") MultipartFile img3) throws IOException {
         Commodity commodity = new Commodity();
         commodity.setId(commodityUtil.newCommodityId());
         commodity.setName(name);
         commodity.setPrice(price);
-        commodity.setLabel1(labelUtil.findLabelIdByLabel(label1));
-        commodity.setLabel2(labelUtil.findLabelIdByLabel(label2));
-        commodity.setLabel3(labelUtil.findLabelIdByLabel(label3));
+        commodity.setLabel2(label2id);
+        commodity.setPict1(imageUtil.imageToByte(img1));
+        commodity.setPict2(imageUtil.imageToByte(img2));
+        commodity.setPict3(imageUtil.imageToByte(img3));
         try {
             commodityRepository.saveAndFlush(commodity);
             return Constants.SUCCESS;

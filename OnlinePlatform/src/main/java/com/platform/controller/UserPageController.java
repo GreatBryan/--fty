@@ -1,7 +1,7 @@
 package com.platform.controller;
 
 import com.platform.util.ImageUtil;
-import com.platform.util.model.User;
+import com.platform.model.User;
 import com.platform.repository.UserRepository;
 import com.platform.util.Constants;
 import com.platform.util.UserUtil;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequestMapping("/userpage")
+@CrossOrigin(origins = "*",maxAge = 3600)
 public class UserPageController {
 
     @Autowired
@@ -31,7 +31,6 @@ public class UserPageController {
      * @param account 账号
      * @return User
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
     @GetMapping("/user")
     @ResponseBody
     public List<User> getUserByAccount(@RequestParam("account") String account){
@@ -44,7 +43,6 @@ public class UserPageController {
      * @param
      * @return 校验结果
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
     @GetMapping("/check")
     @ResponseBody
     public String loginAccount(@RequestParam("account") String account,
@@ -63,7 +61,6 @@ public class UserPageController {
      * @param password 密码
      * @return 校验结果
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
     @GetMapping("/register")
     @ResponseBody
     public String registerAccount(@RequestParam("account") String account,
@@ -95,7 +92,6 @@ public class UserPageController {
      * @param img 图片
      * @return 更新结果
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
     @PostMapping("/updateuserimg")
     @ResponseBody
     public String updateImgByAccount(@RequestParam("account") String account,
@@ -116,7 +112,6 @@ public class UserPageController {
      * @param account 账号
      * @return 图片
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
     @GetMapping("/getuserimg")
     @ResponseBody
     public byte[] updateImgByAccount(@RequestParam("account") String account) throws IOException {

@@ -11,7 +11,11 @@ public class UserUtil {
     private UserRepository userRepository;
 
     public int newUserId(){
-        return userRepository.findMaxId() + 1;
+        try{
+            return userRepository.findMaxId() + 1;
+        } catch (Exception e){
+            return 1;
+        }
     }
 
 }
