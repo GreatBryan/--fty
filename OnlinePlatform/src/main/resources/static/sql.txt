@@ -1,0 +1,83 @@
+create table hibernate_sequence
+(
+    next_val bigint null
+)
+    engine = MyISAM;
+
+create table label
+(
+    id    int auto_increment
+        primary key,
+    label varchar(10) null,
+    constraint label_label_uindex
+        unique (label)
+);
+
+create table label2
+(
+    id         int auto_increment
+        primary key,
+    label1     int         not null,
+    label2name varchar(10) not null,
+    constraint label2_label2name_uindex
+        unique (label2name),
+    constraint label2_label_id_fk
+        foreign key (label1) references label (id)
+);
+
+create table users
+(
+    id       int auto_increment
+        primary key,
+    name     varchar(10)   null,
+    account  varchar(10)   null,
+    password varchar(15)   null,
+    role     int default 0 not null comment '`0`代表普通用户，`1`代表管理员。',
+    picture  mediumblob    null,
+    constraint users_account_uindex
+        unique (account)
+);
+
+create table commodity
+(
+    id         int auto_increment
+        primary key,
+    name       varchar(30) not null,
+    price      int         not null,
+    label1     int         null,
+    label2     int         not null,
+    label3     int         null,
+    pict1      longblob    not null,
+    pict2      longblob    not null,
+    pict3      longblob    not null,
+    meraccount varchar(20) null,
+    constraint commodity_name_uindex
+        unique (name),
+    constraint commodity_users_account_fk
+        foreign key (meraccount) references users (account)
+);
+
+create table cart
+(
+    id          int auto_increment
+        primary key,
+    userid      int           not null,
+    commodityid int           not null,
+    type        int default 0 not null comment '`0`代表放入购物车未购买，`1`代表已支付购买。',
+    updatetime  timestamp     not null,
+    times       int default 1 not null,
+    constraint shopping_cart_commodity_id_fk
+        foreign key (commodityid) references commodity (id),
+    constraint shopping_cart_users_id_fk
+        foreign key (userid) references users (id)
+);
+
+create index commodity_label2_id_fk
+    on commodity (label2);
+
+create index commodity_label_id_fk
+    on commodity (label1);
+
+create index commodity_label_id_fk_3
+    on commodity (label3);
+
