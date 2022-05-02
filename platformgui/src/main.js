@@ -23,8 +23,8 @@ Vue.config.productionTip = false
 Vue.use(VueResource)
 Vue.use(ViewUI)
 Vue.prototype.axios = axios
-Vue.prototype.serverURL = 'http://127.0.0.1:8082'
-// Vue.prototype.serverURL = 'http://116.205.171.68:8080/platform'
+// Vue.prototype.serverURL = 'http://127.0.0.1:8082'
+Vue.prototype.serverURL = 'http://116.205.171.68:8080/platform'
 Vue.prototype.SUCCESS = 111
 
 // eslint-disable-next-line no-new

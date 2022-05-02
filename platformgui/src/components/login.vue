@@ -1,4 +1,5 @@
 <template>
+  <Layout>
   <div class="wrap" id="wrap">
     <div class="logGet">
       <!-- 头部提示信息 -->
@@ -24,7 +25,7 @@
           </p>
           <Form :model="formItem" :label-width="80">
             <FormItem label="名字">
-              <Input v-model="formItem.name" placeholder="长度不超过10"></Input>
+              <Input v-model="formItem.name" placeholder="长度不超过5"></Input>
             </FormItem>
             <FormItem label="账号">
               <Input v-model="formItem.account" placeholder="长度不超过10"></Input>
@@ -49,6 +50,9 @@
       </div>
     </div>
   </div>
+    <Footer class="layout-footer-center">2022.3-2022.4 毕业设计的网购平台开发中，使用过程中遇到bug、疑点可及时反馈 &copy; FTY
+    </Footer>
+  </Layout>
 </template>
 
 <script>
@@ -128,7 +132,7 @@ export default {
           that.$Message.success('注册成功')
           that.register = false
         } else {
-          that.$Message.info('账号已存在')
+          that.$Message.info('数据填写错误，或账号已存在')
         }
       })
     }

@@ -24,6 +24,16 @@ public class Commodity {
 
     private byte[] pict3;
 
+    private String meraccount;
+
+    public String getMeraccount() {
+        return meraccount;
+    }
+
+    public void setMeraccount(String meraccount) {
+        this.meraccount = meraccount;
+    }
+
     public byte[] getPict1() {
         return pict1;
     }

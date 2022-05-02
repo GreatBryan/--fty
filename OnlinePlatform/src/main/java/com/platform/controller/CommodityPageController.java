@@ -11,6 +11,7 @@ import com.platform.util.DateUtil;
 import com.platform.model.Commodity;
 import com.platform.model.Label;
 import com.platform.model.Label2;
+import com.platform.util.LabelUtil;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,9 @@ public class CommodityPageController {
 
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private LabelUtil labelUtil;
 
     @Autowired
     private DateUtil dateUtil;
@@ -159,6 +163,43 @@ public class CommodityPageController {
     @ResponseBody
     public byte[] getPicture3ById(@RequestParam("commodityid") int commodityid){
         return commodityRepository.findAllById(commodityid).get(0).getPict3();
+    }
+
+    /**
+     * 新增标签1
+     */
+    @RequestMapping("/newlabel1")
+    @ResponseBody
+    public String newLabel1(@RequestParam("label1") String label1){
+        Label label = new Label();
+        label.setId(labelUtil.newLabelId());
+        label.setLabel(label1);
+        try{
+            labelRepository.saveAndFlush(label);
+            return Constants.SUCCESS;
+        }catch (Exception e){
+            return Constants.FAILED;
+        }
+    }
+
+    /**
+     * 新增标签2
+     */
+    @RequestMapping("/newlabel2")
+    @ResponseBody
+    public String newLabel2(@RequestParam("label1") String label1,
+                            @RequestParam("label2") String label2){
+        try{
+            Label label = labelRepository.findAllByLabel(label1).get(0);
+            Label2 label2new = new Label2();
+            label2new.setId(labelUtil.newLabel2Id());
+            label2new.setLabel1(label.getId());
+            label2new.setLabel2name(label2);
+            label2Repository.saveAndFlush(label2new);
+            return Constants.SUCCESS;
+        }catch (Exception e){
+            return Constants.FAILED;
+        }
     }
 
 }

@@ -11,6 +11,10 @@ public interface CommodityRepository extends JpaRepository<Commodity, Integer> {
 
     List<Commodity> findAll();
 
+    List<Commodity> findAllByMeraccount(String Meraccount);
+
+    void deleteAllById(int cid);
+
     List<Commodity> findAllByLabel2(int label2id);
 
     List<Commodity> findAllById(int id);

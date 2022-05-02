@@ -1,6 +1,7 @@
 package com.platform.util;
 
 import com.platform.model.Label;
+import com.platform.repository.Label2Repository;
 import com.platform.repository.LabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class LabelUtil {
     @Autowired
     private LabelRepository labelRepository;
+
+    @Autowired
+    private Label2Repository label2Repository;
 
     //通过标签名获取标签的主键id，若表中没有此id，则插入新标签并返回其id。
     public int findLabelIdByLabel(String name){
@@ -27,6 +31,19 @@ public class LabelUtil {
     }
 
     public int newLabelId(){
-        return labelRepository.findMaxId() + 1;
+        try{
+            return labelRepository.findMaxId() + 1;
+        } catch (Exception e){
+            return 1;
+        }
     }
+
+    public int newLabel2Id(){
+        try{
+            return label2Repository.findMaxId() + 1;
+        } catch (Exception e){
+            return 1;
+        }
+    }
+
 }
