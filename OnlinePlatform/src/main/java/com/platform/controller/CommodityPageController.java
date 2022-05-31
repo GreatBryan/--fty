@@ -16,6 +16,8 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.json.JSONObject;
+
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -69,6 +71,29 @@ public class CommodityPageController {
                           @RequestParam("userid") int userid){
         return updateCartByCommodityidAndUserid(commodityid, userid, Constants.BUYCOMMODITY);
     }
+
+    /**
+     * 删除购物车记录
+     * @param userid
+     * @param commodityid
+     * @param type
+     * @return 删除结果
+     */
+    @RequestMapping("/deletecart")
+    @ResponseBody
+    @Transactional
+    public String deleteCart(@RequestParam("userid") int userid,
+                             @RequestParam("commodityid") int commodityid,
+                             @RequestParam("type") int type){
+        try{
+            cartRepository.deleteAllByUseridAndCommodityidAndType(userid, commodityid, type);
+            return Constants.SUCCESS;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return Constants.FAILED;
+        }
+    }
+
 
     public String updateCartByCommodityidAndUserid(int commodityid, int userid, int type){
         List<Cart> queryCartList = cartRepository.findAllByUseridAndCommodityidAndType(userid, commodityid, type);

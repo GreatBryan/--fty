@@ -1,5 +1,6 @@
 package com.platform.controller;
 
+import com.platform.model.Commodity;
 import com.platform.util.ImageUtil;
 import com.platform.model.User;
 import com.platform.repository.UserRepository;

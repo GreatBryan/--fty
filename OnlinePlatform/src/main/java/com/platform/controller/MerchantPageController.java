@@ -1,12 +1,11 @@
 package com.platform.controller;
 
+import com.platform.model.Cart;
 import com.platform.model.Label2;
-import com.platform.repository.Label2Repository;
+import com.platform.repository.*;
 import com.platform.util.ImageUtil;
 import com.platform.model.Commodity;
 import com.platform.model.Label;
-import com.platform.repository.CommodityRepository;
-import com.platform.repository.LabelRepository;
 import com.platform.util.CommodityUtil;
 import com.platform.util.Constants;
 import com.platform.util.LabelUtil;
@@ -16,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,6 +40,12 @@ public class MerchantPageController {
 
     @Autowired
     private ImageUtil imageUtil;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * 添加标签
@@ -133,6 +139,53 @@ public class MerchantPageController {
     public List<Commodity> getCommodityListByMerchantUid(@RequestParam("meraccount") String meraccount){
         return commodityRepository.findAllByMeraccount(meraccount);
     }
+
+
+    /**
+     * 获取用户购物车物品
+     * @param account
+     */
+    @GetMapping("/getusercart")
+    @ResponseBody
+    public List<Commodity> getUserCart(@RequestParam("account") String account) {
+        int userid = userRepository.findAllByAccount(account).get(0).getId();
+        List<Cart> carts = cartRepository.findAllByUseridAndType(userid, Constants.ADDINTOCART);
+        List<Commodity> commodities = new ArrayList<>();
+        for(Cart cart : carts){
+            commodities.add(commodityRepository.findAllById(cart.getCommodityid()).get(0));
+        }
+        return commodities;
+    }
+
+    /**
+     * 获取用户已购买物品
+     * @param account
+     */
+    @GetMapping("/getuserbought")
+    @ResponseBody
+    public List<Commodity> getUserBought(@RequestParam("account") String account) {
+        int userid = userRepository.findAllByAccount(account).get(0).getId();
+        List<Cart> carts = cartRepository.findAllByUseridAndType(userid, Constants.BUYCOMMODITY);
+        List<Commodity> commodities = new ArrayList<>();
+        for(Cart cart : carts){
+            commodities.add(commodityRepository.findAllById(cart.getCommodityid()).get(0));
+        }
+        return commodities;
+    }
+
+    /**
+     * 获取用户的推荐物品
+     * @param account
+     */
+    @GetMapping("/getuserfavor")
+    @ResponseBody
+    public List<Commodity> getUserFavor(@RequestParam("account") String account) {
+        List<Commodity> commodities = new ArrayList<>();
+
+        // todo
+        return commodities;
+    }
+
 
     /**
      * 删除指定cid的商品

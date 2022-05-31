@@ -93,8 +93,8 @@
                 <img :src=commodity.pict3 style="height: 300px"/>
                 <p style="margin-top: 10px; font-size: 20px; font-family:weifeng, serif">{{commodity.price}}￥</p>
                 <p>
-                  <Button type="dashed" shape="circle" icon="md-basket" style="margin-right: 30px; margin-top: 10px;width: 130px;margin-bottom: 20px">加入购物车</Button>
-                  <Button type="default" shape="circle" icon="ios-card" style="margin-left: 30px; margin-top: 10px;width: 130px; margin-bottom: 20px">立即购买</Button>
+                  <Button type="dashed" @click="addToCart(commodity.id)" shape="circle" icon="md-basket" style="margin-right: 30px; margin-top: 10px;width: 130px;margin-bottom: 20px">加入购物车</Button>
+                  <Button type="default" @click="buyCommodity(commodity.id)" shape="circle" icon="ios-card" style="margin-left: 30px; margin-top: 10px;width: 130px; margin-bottom: 20px">立即购买</Button>
                 </p>
               </span>
             </Content>
@@ -124,35 +124,25 @@
                   <span style="font-size: 8px; font-family: heying,serif; color: #2c3e50">更新头像</span>
                 </Upload>
                 <MenuItem name="1" style="margin-top: 30px">
-                    <span style="font-size: 15px; font-family: Arial,serif; color: #2c3e50; margin-left: 0; font-weight: bold">购物车（21）</span>
+                    <span @click="showCart" style="font-size: 15px; font-family: Arial,serif; color: #2c3e50; margin-left: 0; font-weight: bold">购物车（{{numOfCart}}）</span>
                 </MenuItem>
                 <MenuItem name="2">
-                  <span style="font-size: 15px; font-family: Arial,serif; color: #2c3e50; font-weight: bold">已购买（12）</span>
+                  <span @click="showBought" style="font-size: 15px; font-family: Arial,serif; color: #2c3e50; font-weight: bold">已购买（{{numOfBought}}）</span>
                 </MenuItem>
                 <MenuItem name="3">
-                  <span style="font-size: 15px; font-family: Arial,serif; color: #2c3e50; margin-left: 0; font-weight: bold">猜您喜欢  </span>
+                  <span @click="showFavor" style="font-size: 15px; font-family: Arial,serif; color: #2c3e50; margin-left: 0; font-weight: bold">猜您喜欢  </span>
                 </MenuItem>
-<!--                <Submenu v-for="(label, i) in labelList" :key="i" :name="label.label1id">-->
-<!--                  <template slot="title">-->
-<!--                    <Icon type="ios-basket" style="font-size: 25px;" ></Icon>-->
-<!--                    <span style="font-size: 18px;"> {{label.label1name}} </span>-->
-<!--                  </template>-->
-<!--                  <MenuItem v-for="(label2, j) in label.label2List" :key="j" :name="label2.label2id">-->
-<!--                    <span style="font-size: 12px; margin-left: 15px" @click="getCommodity(label2.label2id)"> {{label2.label2name}} </span>-->
-<!--                  </MenuItem>-->
-<!--                </Submenu>-->
               </Menu>
             </Sider>
             <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
-              <span v-for="(commodity, i) in commodityList" :key="i">
+              <span v-for="(commodity, i) in userCommodityList" :key="i">
                 <p style="margin-top: 10px; font-size: 20px; font-family:weifeng, serif">{{commodity.name}}</p>
                 <img :src=commodity.pict1 style="height: 300px"/>
                 <img :src=commodity.pict2 style="height: 300px"/>
                 <img :src=commodity.pict3 style="height: 300px"/>
                 <p style="margin-top: 10px; font-size: 20px; font-family:weifeng, serif">{{commodity.price}}￥</p>
                 <p>
-                  <Button type="dashed" shape="circle" icon="md-basket" style="margin-right: 30px; margin-top: 10px;width: 130px;margin-bottom: 20px">加入购物车</Button>
-                  <Button type="default" shape="circle" icon="ios-card" style="margin-left: 30px; margin-top: 10px;width: 130px; margin-bottom: 20px">立即购买</Button>
+                  <Button type="dashed" @click="deleteCart(commodity.id)" shape="circle" icon="md-basket" style="margin-right: 30px; margin-top: 10px;width: 130px;margin-bottom: 20px">删除记录</Button>
                 </p>
               </span>
             </Content>
@@ -298,7 +288,14 @@ export default {
         img2: null,
         img3: null
       },
-      merPageComList: []
+      merPageComList: [],
+      numOfCart: 0,
+      numOfBought: 0,
+      cartComList: [],
+      boughtComList: [],
+      favorComList: [],
+      userCommodityList: [],
+      cartType: 0
     }
   },
   created () {
@@ -420,11 +417,14 @@ export default {
         this.showHomePage = true
         this.showUserPage = false
         this.showMerPage = false
-        this.$Message.info('为登录')
+        this.$Message.info('未登录')
       } else {
         this.showHomePage = false
         this.showUserPage = true
         this.showMerPage = false
+        this.cartComList = this.getCartComList()
+        this.boughtComList = this.getBoughtComList()
+        this.favorComList = this.getFavorComList()
       }
     },
     clickMerPage () {
@@ -490,6 +490,117 @@ export default {
           })
         }
       })
+    },
+    getCartComList () {
+      let that = this
+      let url = that.serverURL + '/merchantpage/getusercart'
+      let parameters = {account: localStorage.getItem('jingbao_userid')}
+      that.axios.get(url, {params: parameters}).then(response => {
+        that.cartComList = response.data
+        that.cartType = 0
+        this.numOfCart = this.cartComList.length
+        for (let i = 0; i < that.cartComList.length; i++) {
+          // 获取第一张图片
+          that.axios.get(that.serverURL + '/commodity/getpict1byid', {
+            params: {commodityid: that.cartComList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.cartComList[i].pict1 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+          // 获取第二张图片
+          that.axios.get(that.serverURL + '/commodity/getpict2byid', {
+            params: {commodityid: that.cartComList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.cartComList[i].pict2 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+          // 获取第三张图片
+          that.axios.get(that.serverURL + '/commodity/getpict3byid', {
+            params: {commodityid: that.cartComList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.cartComList[i].pict3 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+        }
+      })
+    },
+    getBoughtComList () {
+      let that = this
+      let url = that.serverURL + '/merchantpage/getuserbought'
+      let parameters = {account: localStorage.getItem('jingbao_userid')}
+      that.axios.get(url, {params: parameters}).then(response => {
+        that.boughtComList = response.data
+        that.cartType = 1
+        this.numOfBought = this.boughtComList.length
+        for (let i = 0; i < that.boughtComList.length; i++) {
+          // 获取第一张图片
+          that.axios.get(that.serverURL + '/commodity/getpict1byid', {
+            params: {commodityid: that.boughtComList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.boughtComList[i].pict1 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+          // 获取第二张图片
+          that.axios.get(that.serverURL + '/commodity/getpict2byid', {
+            params: {commodityid: that.boughtComList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.boughtComList[i].pict2 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+          // 获取第三张图片
+          that.axios.get(that.serverURL + '/commodity/getpict3byid', {
+            params: {commodityid: that.boughtComList[i].id},
+            responseType: 'blob'
+          }).then(response => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              that.boughtComList[i].pict3 = e.target.result
+            }
+            reader.readAsDataURL(response.data)
+          })
+        }
+      })
+    },
+    getFavorComList () {
+      let that = this
+      let url = that.serverURL + '/merchantpage/getuserfavor'
+      let parameters = {account: localStorage.getItem('jingbao_userid')}
+      that.axios.get(url, {params: parameters}).then(response => {
+        that.favorComList = response.data
+      })
+    },
+    showCart () {
+      this.getCartComList()
+      this.userCommodityList = this.cartComList
+      this.cartType = 0
+    },
+    showBought () {
+      this.getBoughtComList()
+      this.userCommodityList = this.boughtComList
+      this.cartType = 1
+    },
+    showFavor () {
+      this.userCommodityList = this.favorComList
     },
     handleBeforeUpload (file) {
       this.imageFile = file
@@ -601,6 +712,67 @@ export default {
         } else {
           that.$Message.warning('删除失败')
         }
+      })
+    },
+    addToCart (cid) {
+      let userid = 0
+      let that = this
+      let url = that.serverURL + '/userpage/user'
+      let parameters = {account: localStorage.getItem('jingbao_userid')}
+      that.axios.get(url, {
+        params: parameters
+      }).then(response => {
+        userid = response.data[0].id
+        url = that.serverURL + '/commodity/addcart'
+        parameters = {commodityid: cid, userid: userid}
+        that.axios.get(url, {params: parameters}).then(response => {
+          if (response.data === 111) {
+            that.$Message.success('加入成功')
+          } else {
+            that.$Message.warning('加入失败')
+          }
+        })
+      })
+    },
+    buyCommodity (cid) {
+      let userid = 0
+      let that = this
+      let url = that.serverURL + '/userpage/user'
+      let parameters = {account: localStorage.getItem('jingbao_userid')}
+      that.axios.get(url, {
+        params: parameters
+      }).then(response => {
+        console.log(response.data[0].role)
+        userid = response.data[0].id
+        url = that.serverURL + '/commodity/buycommodity'
+        parameters = {commodityid: cid, userid: userid}
+        that.axios.get(url, {params: parameters}).then(response => {
+          if (response.data === 111) {
+            that.$Message.success('购买成功')
+          } else {
+            that.$Message.warning('购买失败')
+          }
+        })
+      })
+    },
+    deleteCart (cid) {
+      let userid = 0
+      let that = this
+      let url = that.serverURL + '/userpage/user'
+      let parameters = {account: localStorage.getItem('jingbao_userid')}
+      that.axios.get(url, {
+        params: parameters
+      }).then(response => {
+        userid = response.data[0].id
+        url = that.serverURL + '/commodity/deletecart'
+        parameters = {commodityid: cid, userid: userid, type: that.cartType}
+        that.axios.get(url, {params: parameters}).then(response => {
+          if (response.data === 111) {
+            that.$Message.success('删除成功，请刷新')
+          } else {
+            that.$Message.warning('删除失败')
+          }
+        })
       })
     }
   },

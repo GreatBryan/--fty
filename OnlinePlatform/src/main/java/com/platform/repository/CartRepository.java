@@ -12,6 +12,10 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 
     List<Cart> findAll();
 
+    List<Cart> findAllByUseridAndType(int userid, int type);
+
+    void deleteAllByUseridAndCommodityidAndType(int userid, int commodityid, int type);
+
     List<Cart> findAllByUseridAndCommodityidAndType(int userid, int commodityid, int type);
 
     //调用数据库自定义函数
